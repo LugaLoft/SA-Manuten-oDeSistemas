@@ -8,22 +8,25 @@ import com.tcc2.ellemVeigaOficial.config.authentication.JwtTokenService;
 
 @Controller
 public class PageController {
-    @Autowired
-    private JwtTokenService jwtTokenService;
-    
+
     @GetMapping("/login")
     public String login() {
         return "login";
     }
 
+    @GetMapping("/")
+    public String redirectToLogin() {
+        return "redirect:/login";
+    }
+
     @GetMapping("/paginainicial")
-    public String paginainicial (){
-        return "paginainicial";  // Retorna a página de sucesso
+    public String paginainicial() {
+        return "paginainicial";
     }
 
     @GetMapping("/relatorio")
     public String relatorio() {
-        return "relatorio"; 
+        return "relatorio";
     }
 
     @GetMapping("/fluxocaixa")
@@ -33,12 +36,12 @@ public class PageController {
 
     @GetMapping("/alterarcliente")
     public String alterarcliente() {
-        return "alterarcliente"; 
+        return "alterarcliente";
     }
 
     @GetMapping("/alterarpagamento")
     public String alterarpagamento() {
-        return "alterarpagamento"; 
+        return "alterarpagamento";
     }
 
     @GetMapping("/alterarpedido")
@@ -48,14 +51,13 @@ public class PageController {
 
     @GetMapping("/alterarproduto")
     public String alterarproduto() {
-        return "alterarproduto"; 
+        return "alterarproduto";
     }
 
     @GetMapping("/alterarusuario")
     public String alterarusuario() {
-        return "alterarusuario"; 
+        return "alterarusuario";
     }
-
 
     @GetMapping("/alterarvenda")
     public String alterarvenda() {
@@ -64,17 +66,17 @@ public class PageController {
 
     @GetMapping("/alterarvendedor")
     public String alterarvendedor() {
-        return "alterarvendedor"; 
+        return "alterarvendedor";
     }
 
     @GetMapping("/buscarcliente")
     public String buscarcliente() {
-        return "buscarcliente"; 
+        return "buscarcliente";
     }
-    
+
     @GetMapping("/buscarpagamento")
     public String buscarpagamento() {
-        return "buscarpagamento"; 
+        return "buscarpagamento";
     }
 
     @GetMapping("/buscarpedido")
@@ -84,12 +86,12 @@ public class PageController {
 
     @GetMapping("/buscarproduto")
     public String buscarproduto() {
-        return "buscarproduto"; 
+        return "buscarproduto";
     }
 
     @GetMapping("/buscarusuario")
     public String buscarusuario() {
-        return "buscarusuario"; 
+        return "buscarusuario";
     }
 
     @GetMapping("/buscarvenda")
@@ -99,18 +101,17 @@ public class PageController {
 
     @GetMapping("/buscarvendedor")
     public String buscarvendedor() {
-        return "buscarvendedor"; 
+        return "buscarvendedor";
     }
-    
 
     @GetMapping("/cadastrocliente")
     public String cadastrocliente() {
-        return "cadastrocliente"; 
+        return "cadastrocliente";
     }
-    
+
     @GetMapping("/cadastropagamento")
     public String cadastropagamento() {
-        return "cadastropagamento"; 
+        return "cadastropagamento";
     }
 
     @GetMapping("/cadastropedido")
@@ -120,12 +121,12 @@ public class PageController {
 
     @GetMapping("/cadastroproduto")
     public String cadastroproduto() {
-        return "cadastroproduto"; 
+        return "cadastroproduto";
     }
 
     @GetMapping("/cadastrousuario")
     public String cadastrousuario() {
-        return "cadastrousuario"; 
+        return "cadastrousuario";
     }
 
     @GetMapping("/cadastrovenda")
@@ -135,9 +136,6 @@ public class PageController {
 
     @GetMapping("/cadastrovendedor")
     public String cadastrovendedor() {
-        return "cadastrovendedor"; 
+        return "cadastrovendedor";
     }
 }
-
-
-

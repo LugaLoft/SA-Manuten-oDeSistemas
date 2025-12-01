@@ -17,7 +17,7 @@ function carregarRelatorio() {
         return;
     }
 
-    let url = `http://localhost:8080/venda/fluxo-caixa?dataInicio=${dataInicio}&dataFim=${dataFim}`;
+    let url = `http://localhost:8081/venda/fluxo-caixa?dataInicio=${dataInicio}&dataFim=${dataFim}`;
     if (formaPagamento) {
         url += `&formaPagamento=${formaPagamento}`;
     }

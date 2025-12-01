@@ -28,7 +28,7 @@ async function searchVenda() {
     if (dataFim) params.append('dataFinal', dataFim);
 
     try {
-        const response = await fetch(`http://localhost:8080/venda/buscar?${params.toString()}`, {
+        const response = await fetch(`http://localhost:8081/venda/buscar?${params.toString()}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -120,7 +120,7 @@ async function editvenda(codigo) {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`http://localhost:8080/venda/${codigo}`, {
+        const response = await fetch(`http://localhost:8081/venda/${codigo}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
