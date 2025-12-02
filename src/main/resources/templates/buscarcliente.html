@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisa de clientes</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" type="text/css" href="/css/buscarcliente.css">
 </head>
+
 <body>
     <div class="navbar">
-        <a href="/paginainicial"><img src="/images/logo.jpg" alt="Logo"/></a>
+        <a href="/paginainicial"><img src="/images/logo.jpg" alt="Logo" /></a>
         <div class="icons">
             <a href="/buscarusuario" title="Usuário">
                 <span class="material-icons">account_circle</span>
@@ -21,7 +24,8 @@
     </div>
     <div class="sidebar">
         <ul>
-            <li><a href="/buscarcliente" title="Cliente" class="active"><span class="material-icons">people</span></a></li>
+            <li><a href="/buscarcliente" title="Cliente" class="active"><span class="material-icons">people</span></a>
+            </li>
             <li><a href="/buscarproduto" title="Produto"><span class="material-icons">checkroom</span></a></li>
             <li><a href="/buscarpedido" title="Pedido"><span class="material-icons">list_alt</span></a></li>
             <li><a href="/buscarvenda" title="Venda"><span class="material-icons">attach_money</span></a></li>
@@ -31,11 +35,11 @@
     </div>
     <div class="content">
         <h1>Pesquisa de Clientes</h1>
-		<div class="input-field">
+        <div class="input-field">
             <input type="text" id="codigo" required>
             <label for="codigo">Código do Cliente</label>
         </div>
-		<div class="input-field">
+        <div class="input-field">
             <input type="text" id="nome" required>
             <label for="nome">Nome</label>
         </div>
@@ -43,7 +47,17 @@
         <div class="button-container">
             <button class="btn waves-effect waves-light" type="button" onclick="searchCliente()">Pesquisar</button>
             <button class="btn waves-effect waves-light" type="button" onclick="clearSearch()">Limpar</button>
-            <button class="btn waves-effect waves-light" type="button" onclick="window.location.href='/cadastrocliente'">Cadastrar Cliente</button>
+            <button class="btn waves-effect waves-light" type="button"
+                onclick="window.location.href='/cadastrocliente'">Cadastrar Cliente</button>
+        </div>
+
+        <div class="input-field">
+            <select id="ordenarPor" onchange="searchCliente()">
+                <option value="">Sem ordenação</option>
+                <option value="nome">Ordenar por Nome</option>
+                <option value="cidade">Ordenar por Cidade</option>
+            </select>
+            <label>Ordenação</label>
         </div>
 
         <table id="resultsTable">
@@ -51,6 +65,7 @@
                 <tr>
                     <th>Código</th>
                     <th>Nome</th>
+                    <th>Cidade</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -68,4 +83,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="/js/buscarcliente.js"></script>
 </body>
+
 </html>

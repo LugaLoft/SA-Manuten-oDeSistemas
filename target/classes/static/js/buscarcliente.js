@@ -45,6 +45,16 @@ async function searchCliente() {
             filtrados = filtrados.filter(c => String(c.id).includes(codigo));
         }
 
+        const ordenarPor = document.getElementById('ordenarPor').value;
+
+        if (ordenarPor === 'nome') {
+            filtrados.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+        }
+
+        if (ordenarPor === 'cidade') {
+            filtrados.sort((a, b) => (a.cidade || '').localeCompare(b.cidade || ''));
+        }
+
         populateResultsTable(filtrados);
     } catch (error) {
         console.error(error);
@@ -78,6 +88,9 @@ function renderPage() {
             <td>
                 ${cliente.nome}
                 ${cliente.observacao?.toLowerCase() === "inativo" ? '<span class="badge-inativo">INATIVO</span>' : ''}
+            </td>
+            <td>
+                ${cliente.cidade || ''}
             </td>
             <td>
                 <button class="action-button" onclick="editcliente('${cliente.id}')">
@@ -176,4 +189,7 @@ async function confirmDelete(codigo) {
     }
 }
 
-
+document.addEventListener('DOMContentLoaded', function () {
+    const elems = document.querySelectorAll('select');
+    M.FormSelect.init(elems);
+});
