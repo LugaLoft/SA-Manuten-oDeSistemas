@@ -3,53 +3,53 @@ let currentPage = 1;
 const itemsPerPage = 10;
 
 function confirmLogout(event) {
-	event.preventDefault();
-	const confirmed = confirm("Você deseja realmente sair da aplicação?");
-	if (confirmed) {
-		localStorage.clear();
-		window.location.href = "/login";
-	}
+    event.preventDefault();
+    const confirmed = confirm("Você deseja realmente sair da aplicação?");
+    if (confirmed) {
+        localStorage.clear();
+        window.location.href = "/login";
+    }
 }
 
 async function searchCliente() {
-	const codigo = document.getElementById('codigo').value.trim();
-	const nome = document.getElementById('nome').value.trim();
-	const token = localStorage.getItem('token');
+    const codigo = document.getElementById('codigo').value.trim();
+    const nome = document.getElementById('nome').value.trim();
+    const token = localStorage.getItem('token');
 
-	const params = new URLSearchParams();
-	if (codigo) params.append('id', codigo);
-	if (nome) params.append('nome', nome); 
+    const params = new URLSearchParams();
+    if (codigo) params.append('id', codigo);
+    if (nome) params.append('nome', nome);
 
-	try {
-		const response = await fetch(`/cliente/buscar?${params.toString()}`, {
-			method: 'GET',
-			headers: {
-				'Authorization': `Bearer ${token}`,
-				'Content-Type': 'application/json'
-			}
-		});
+    try {
+        const response = await fetch(`/cliente/buscar?${params.toString()}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
 
-		if (!response.ok) {
-			throw new Error('Erro ao buscar clientes');
-		}
+        if (!response.ok) {
+            throw new Error('Erro ao buscar clientes');
+        }
 
-		const clientes = await response.json();
+        const clientes = await response.json();
 
-		// Aplica filtro no frontend também como fallback
-		let filtrados = clientes;
-		if (nome) {
-			const nomeLower = nome.toLowerCase();
-			filtrados = clientes.filter(c => c.nome && c.nome.toLowerCase().includes(nomeLower));
-		}
-		if (codigo) {
-			filtrados = filtrados.filter(c => String(c.id).includes(codigo));
-		}
+        // Aplica filtro no frontend também como fallback
+        let filtrados = clientes;
+        if (nome) {
+            const nomeLower = nome.toLowerCase();
+            filtrados = clientes.filter(c => c.nome && c.nome.toLowerCase().includes(nomeLower));
+        }
+        if (codigo) {
+            filtrados = filtrados.filter(c => String(c.id).includes(codigo));
+        }
 
-		populateResultsTable(filtrados);
-	} catch (error) {
-		console.error(error);
-		M.toast({ html: `Erro ao buscar clientes: ${error}`, classes: 'red' });
-	}
+        populateResultsTable(filtrados);
+    } catch (error) {
+        console.error(error);
+        M.toast({ html: `Erro ao buscar clientes: ${error}`, classes: 'red' });
+    }
 }
 
 function populateResultsTable(clientes) {
@@ -60,7 +60,7 @@ function populateResultsTable(clientes) {
 
 function renderPage() {
     const tbody = document.querySelector('#resultsTable tbody');
-    tbody.innerHTML = ''; 
+    tbody.innerHTML = '';
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -75,7 +75,10 @@ function renderPage() {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${cliente.id}</td>
-            <td>${cliente.nome}</td>
+            <td>
+                ${cliente.nome}
+                ${cliente.observacao?.toLowerCase() === "inativo" ? '<span class="badge-inativo">INATIVO</span>' : ''}
+            </td>
             <td>
                 <button class="action-button" onclick="editcliente('${cliente.id}')">
                     <span class="material-icons">edit</span>
@@ -105,10 +108,10 @@ function changePage(direction) {
 }
 
 function clearSearch() {
-	document.getElementById('codigo').value = '';
-	document.getElementById('nome').value = '';
-	document.querySelector('#resultsTable tbody').innerHTML = '';
-	clientesPaginados = [];
+    document.getElementById('codigo').value = '';
+    document.getElementById('nome').value = '';
+    document.querySelector('#resultsTable tbody').innerHTML = '';
+    clientesPaginados = [];
     currentPage = 1;
     document.getElementById('pageInfo').textContent = 'Página 1';
     document.getElementById('prevButton').disabled = true;
@@ -116,7 +119,7 @@ function clearSearch() {
 }
 
 async function editcliente(codigo) {
-	const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
     try {
         const response = await fetch(`/cliente/${codigo}`, {
@@ -145,7 +148,7 @@ async function editcliente(codigo) {
 }
 
 async function confirmDelete(codigo) {
-	const confirmed = confirm("Tem certeza que deseja excluir este cliente?");
+    const confirmed = confirm("Tem certeza que deseja excluir este cliente?");
     if (!confirmed) return;
 
     const token = localStorage.getItem('token');

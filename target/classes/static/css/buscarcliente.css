@@ -10,13 +10,16 @@
     top: 0;
     z-index: 1000;
 }
+
 .navbar img {
     width: 100px;
 }
+
 .icons {
     display: flex;
     gap: 15px;
 }
+
 .icons a {
     color: #000;
     text-decoration: none;
@@ -25,13 +28,16 @@
     justify-content: center;
     align-items: center;
 }
+
 .icons span.material-icons {
     font-size: 35px;
 }
+
 .icons a:hover {
     background-color: #FFE100;
     border-radius: 5px;
-}	
+}
+
 .sidebar {
     background-color: #FFE890;
     width: 140px;
@@ -41,10 +47,12 @@
     left: 0;
     padding-top: 60px;
 }
+
 .sidebar li {
     text-align: center;
     margin-bottom: 38px;
 }
+
 .sidebar a {
     display: flex;
     justify-content: center;
@@ -53,14 +61,17 @@
     line-height: 1;
     color: #000;
 }
+
 .sidebar a:hover {
     background-color: #FFE100;
     border-radius: 5px;
 }
+
 .sidebar span.material-icons {
     font-size: 40px;
     transform: translateY(4px);
-} 
+}
+
 .sidebar ul li a.active {
     background-color: #FFE100;
     color: #000;
@@ -71,6 +82,7 @@
     border-radius: 10px;
     color: #000;
 }
+
 .content {
     display: flex;
     flex-direction: column;
@@ -81,28 +93,35 @@
     padding-top: 70px;
     flex: 1;
 }
+
 .input-field {
     width: 100%;
     max-width: 500px;
 }
+
 .input-field input:focus {
     border-bottom: 1px solid #FFE100 !important;
     box-shadow: 0 1px 0 0 #FFE100 !important;
 }
-.input-field input:focus + label {
+
+.input-field input:focus+label {
     color: #FFE100 !important;
 }
+
 .input-field input.valid {
     border-bottom: 1px solid #FF5733;
 }
+
 .input-field input.invalid {
     border-bottom: 1px solid red;
 }
+
 h1 {
     font-size: 24px;
     text-align: center;
     font-weight: bold;
 }
+
 .btn {
     background-color: #FFE100 !important;
     color: #000 !important;
@@ -113,44 +132,53 @@ h1 {
     cursor: pointer !important;
     margin-top: 05px !important;
     padding: 10px 20px;
-    display: flex;              
-    justify-content: center;    
-    align-items: center;        
-    text-align: center;    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
+
 .btn:hover {
     transform: scale(1.05) !important;
     background-color: #FFE890 !important;
 }
+
 .btn:active {
     transform: scale(0.98) !important;
 }
+
 .button-container {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 20px;
 }
+
 table {
     margin-top: 30px;
     width: 100%;
     max-width: 600px;
     border-collapse: collapse;
 }
-th, td {
+
+th,
+td {
     padding: 10px;
     border: 1px solid #ccc;
     text-align: left;
 }
+
 th {
     background-color: #FFE100;
 }
+
 .pagination {
     margin-top: 20px;
     display: flex;
     justify-content: center;
     gap: 10px;
 }
+
 .pagination button {
     background-color: #FFE100;
     border: none;
@@ -158,6 +186,7 @@ th {
     padding: 8px 12px;
     border-radius: 5px;
 }
+
 .action-button {
     background-color: transparent;
     border: none;
@@ -165,11 +194,24 @@ th {
     padding: 0;
     margin: 0 5px;
 }
+
 .action-button:hover {
-    color: #FFD700; 
+    color: #FFD700;
 }
+
 td button:focus,
 td button:active {
     background-color: transparent;
     color: #000;
+}
+
+.badge-inativo {
+    background-color: #d32f2f;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    margin-left: 6px;
+    border-radius: 6px;
+    display: inline-block;
 }
