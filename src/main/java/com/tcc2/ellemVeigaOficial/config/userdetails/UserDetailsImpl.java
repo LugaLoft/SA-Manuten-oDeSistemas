@@ -1,6 +1,5 @@
 package com.tcc2.ellemVeigaOficial.config.userdetails;
 
-
 import com.tcc2.ellemVeigaOficial.models.Usuario;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,20 +20,20 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         /*
-         Este método converte a lista de papéis (roles) associados ao usuário
-         em uma coleção de GrantedAuthorities, que é a forma que o Spring Security
-         usa para representar papéis. Isso é feito mapeando cada papel para um
-         novo SimpleGrantedAuthority, que é uma implementação simples de
-         GrantedAuthority
-        */
+         * Este método converte a lista de papéis (roles) associados ao usuário
+         * em uma coleção de GrantedAuthorities, que é a forma que o Spring Security
+         * usa para representar papéis. Isso é feito mapeando cada papel para um
+         * novo SimpleGrantedAuthority, que é uma implementação simples de
+         * GrantedAuthority
+         */
 
         return Collections.emptyList();
 
         // Todo: Caso queira colcocar perfis pro endpoints
-//        return user.getRoles()
-//                .stream()
-//                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
-//                .collect(Collectors.toList());
+        // return user.getRoles()
+        // .stream()
+        // .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+        // .collect(Collectors.toList());
     }
 
     @Override

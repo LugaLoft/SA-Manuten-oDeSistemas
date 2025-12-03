@@ -22,39 +22,51 @@ public class UsuarioService {
     private final JwtTokenService jwtTokenService;
 
     public RecoveryJwtTokenDto authenticateUser(Login loginUserDto) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUserDto.getUsuario(), loginUserDto.getSenha());
 
-        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                loginUserDto.getUsuario(),
+                loginUserDto.getSenha());
+
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        return new RecoveryJwtTokenDto(jwtTokenService.gerarToken(userDetails));
+        // ✅ Aqui usamos getUsername(), que existe
+        Usuario usuario = repository.findByUsuario(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        String token = jwtTokenService.gerarToken(userDetails);
+
+        return new RecoveryJwtTokenDto(
+                token,
+                usuario.getId(),
+                usuario.getNome());
     }
 
-    public Usuario addUsuario(Usuario usuario){
+    public Usuario addUsuario(Usuario usuario) {
         return repository.save(usuario);
     }
 
-    public Usuario findById(long id){
+    public Usuario findById(long id) {
         return repository.findById(id).get();
     }
-    
-    public Usuario findByUsuario(String usuario){
+
+    public Usuario findByUsuario(String usuario) {
         return repository.findByUsuario(usuario).get();
     }
 
-    public List<Usuario> findAll(){
+    public List<Usuario> findAll() {
         return repository.findAll();
     }
 
-    public void delete(Long id){
+    public void delete(Long id) {
         repository.deleteById(id);
     }
 
-    public Usuario update(Long id, Usuario usuario){
+    public Usuario update(Long id, Usuario usuario) {
         if (!repository.existsById(id)) {
-            throw new RuntimeException("Usuario não encontrado");}
+            throw new RuntimeException("Usuario não encontrado");
+        }
         usuario.setId(id);
         return repository.save(usuario);
     }

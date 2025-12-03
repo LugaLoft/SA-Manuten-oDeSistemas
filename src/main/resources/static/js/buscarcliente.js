@@ -11,6 +11,45 @@ function confirmLogout(event) {
     }
 }
 
+/* ✅ CORRIGE TEXTO COM ERRO DE ENCODING (CÃ³digo, AndrÃ©, FlorianÃ³polis) */
+function fixMojibake(text) {
+    if (!text) return '';
+    return text
+        .replace(/Ã¡/g, 'á').replace(/ÃÀ/g, 'Á').replace(/Ã /g, 'à')
+        .replace(/Ã¢/g, 'â').replace(/Ã£/g, 'ã')
+        .replace(/Ã©/g, 'é').replace(/Ãª/g, 'ê')
+        .replace(/Ã­/g, 'í')
+        .replace(/Ã³/g, 'ó').replace(/Ã´/g, 'ô').replace(/Ãµ/g, 'õ')
+        .replace(/Ãº/g, 'ú')
+        .replace(/Ã§/g, 'ç')
+        .replace(/Âº/g, 'º').replace(/Âª/g, 'ª')
+        .replace(/Ã‰/g, 'É').replace(/ÃŠ/g, 'Ê')
+        .replace(/Ã/g, 'Í')
+        .replace(/Ã"/g, 'Ó')
+        .replace(/Ã‡/g, 'Ç')
+        .replace(/Ã³/g, 'ó').replace(/â/g, "'")
+        .replace(/â/g, "-").replace(/â¦/g, "...");
+}
+
+async function decodeBufferTry(buffer) {
+    const encodings = ['iso-8859-1', 'windows-1252', 'latin1', 'utf-8'];
+    for (const enc of encodings) {
+        try {
+            const decoder = new TextDecoder(enc);
+            const text = decoder.decode(buffer);
+            return { text, encoding: enc };
+        } catch (e) {
+            console.warn('TextDecoder não suportou:', enc, e);
+        }
+    }
+    const bytes = new Uint8Array(buffer);
+    let fallback = '';
+    for (let i = 0; i < bytes.length; i++) {
+        fallback += String.fromCharCode(bytes[i]);
+    }
+    return { text: fallback, encoding: 'binary-fallback' };
+}
+
 async function searchCliente() {
     const codigo = document.getElementById('codigo').value.trim();
     const nome = document.getElementById('nome').value.trim();
@@ -33,9 +72,18 @@ async function searchCliente() {
             throw new Error('Erro ao buscar clientes');
         }
 
-        const clientes = await response.json();
+        const buffer = await response.arrayBuffer();
+        const decoded = await decodeBufferTry(buffer);
 
-        // Aplica filtro no frontend também como fallback
+        let clientes;
+        try {
+            clientes = JSON.parse(decoded.text);
+        } catch (e) {
+            // Try to fix encoding and parse again
+            const fixedText = fixMojibake(decoded.text);
+            clientes = JSON.parse(fixedText);
+        }
+
         let filtrados = clientes;
         if (nome) {
             const nomeLower = nome.toLowerCase();
@@ -189,6 +237,109 @@ async function confirmDelete(codigo) {
     }
 }
 
+async function exportarClientesCSV() {
+    const codigo = document.getElementById('codigo').value.trim();
+    const nome = document.getElementById('nome').value.trim();
+    const token = localStorage.getItem('token');
+
+    const params = new URLSearchParams();
+    if (codigo) params.append('id', codigo);
+    if (nome) params.append('nome', nome);
+
+    try {
+        const response = await fetch(`/cliente/buscar?${params.toString()}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            const txt = await response.text().catch(() => null);
+            console.error('Resposta não OK:', response.status, txt);
+            throw new Error("Erro ao buscar clientes: " + response.status);
+        }
+
+        const buffer = await response.arrayBuffer();
+        const decoded = await decodeBufferTry(buffer);
+
+        let clientes;
+        try {
+            clientes = JSON.parse(decoded.text);
+        } catch (e) {
+            const tryFixed = fixMojibake(decoded.text);
+            try {
+                clientes = JSON.parse(tryFixed);
+            } catch (e2) {
+                try {
+                    clientes = await response.clone().json();
+                } catch (e3) {
+                    console.error('Falha ao parsear JSON do servidor.');
+                    throw new Error('Não foi possível interpretar a resposta do servidor como JSON.');
+                }
+            }
+        }
+
+        if (!clientes || clientes.length === 0) {
+            M.toast({ html: 'Nenhum cliente para exportar.', classes: 'orange' });
+            return;
+        }
+
+        const usuario = (JSON.parse(localStorage.getItem('usuario'))?.nome) || 'Usuário Desconhecido';
+
+        const agora = new Date();
+        const dataExportacao = agora.toLocaleDateString('pt-BR');
+        const horaExportacao = agora.toLocaleTimeString('pt-BR');
+
+        // ✅ Use semicolons as separators (standard for Brazilian CSV)
+        let csvLines = [];
+        csvLines.push(`Exportado por;${fixMojibake(usuario)}`);
+        csvLines.push(`Data;${dataExportacao}`);
+        csvLines.push(`Hora;${horaExportacao}`);
+        csvLines.push(''); // Empty line
+        csvLines.push('Código;Nome;Cidade'); // Header with semicolons
+
+        clientes.forEach(cliente => {
+            const id = cliente.id ?? '';
+            const nomeField = fixMojibake(String(cliente.nome ?? ''));
+            const cidadeField = fixMojibake(String(cliente.cidade ?? ''));
+
+            // Escape semicolons in data by enclosing in quotes if they contain semicolons
+            let safeNome = nomeField;
+            let safeCidade = cidadeField;
+
+            // If field contains semicolon, enclose entire field in quotes
+            if (nomeField.includes(';')) {
+                safeNome = `"${nomeField}"`;
+            }
+            if (cidadeField.includes(';')) {
+                safeCidade = `"${cidadeField}"`;
+            }
+
+            csvLines.push(`${id};${safeNome};${safeCidade}`);
+        });
+
+        const csv = csvLines.join('\r\n');
+        const csvComBOM = '\uFEFF' + csv; // UTF-8 BOM for Excel
+
+        // Create and download the file
+        const blob = new Blob([csvComBOM], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `clientes_${agora.getTime()}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        M.toast({ html: 'CSV exportado com sucesso!', classes: 'green' });
+
+    } catch (error) {
+        console.error('Erro exportarClientesCSV:', error);
+        M.toast({ html: 'Erro ao exportar CSV. Veja console para detalhes.', classes: 'red' });
+    }
+}
 document.addEventListener('DOMContentLoaded', function () {
     const elems = document.querySelectorAll('select');
     M.FormSelect.init(elems);
